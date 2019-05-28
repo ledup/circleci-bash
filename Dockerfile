@@ -1,11 +1,9 @@
-FROM circleci/golang:1.10.2
+FROM circleci/golang:1.11.10
 MAINTAINER David Gaussinel <dgaussinel@prestaconcept.net>
 
 USER root
-
-RUN apt-get -y install haskell-platform 
-
-RUN go get -u mvdan.cc/sh/cmd/shfmt
+RUN apt-get update
+RUN apt-get -y install haskell-platform
 
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
     && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64" \
@@ -15,6 +13,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364
     && rm -r /root/.gnupg/ \
     && chmod +x /usr/local/bin/gosu
 
+RUN cd $(mktemp -d) && go mod init tmp && go get mvdan.cc/sh/cmd/shfmt
 USER circleci
 
 RUN cabal update \
@@ -27,5 +26,3 @@ USER root
 ADD scripts/entry.sh /entry.sh
 
 ENTRYPOINT ["sh", "/entry.sh"]
-
-
