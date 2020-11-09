@@ -6,13 +6,9 @@ service_group=$(id -g -n ${service_user})
 old_uid=$(id -u ${service_user})
 old_gid=$(id -g ${service_user})
 
-#usermod -d "/home/circleci" ${service_user}
-
-# force le changement d'id utilisateur
 if [ -n "${_UID}" ]; then
     su -c "usermod -u ${_UID} ${service_user}"
 
-    # change l'id de groupe de l'utilisateur
     if [ -n "${_GID}" ]; then
         su -c "groupmod -g ${_GID} ${service_group}"
     fi
@@ -23,4 +19,3 @@ fi
 
 export HOME="/home/circleci"
 /usr/local/bin/gosu circleci "$@"
-
