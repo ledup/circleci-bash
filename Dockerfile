@@ -1,8 +1,7 @@
 FROM circleci/golang:1.15.2
 MAINTAINER David Gaussinel <dgaussinel@prestaconcept.net>
 
-ARG SC_VER=0.7.1
-ARG SHFMT_VER=v3.2.2
+ARG SHFMT_VER=v3.3.0
 USER root
 RUN apt-get update && apt-get -y install haskell-platform && rm -rf /var/lib/apt/lists/*
 
@@ -16,6 +15,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364
 
 RUN cd $(mktemp -d) && go mod init tmp && go get mvdan.cc/sh/v3/cmd/shfmt@${SHFMT_VER}
 
+ARG SC_VER=0.7.2
 RUN cabal update \
     && cabal install --force-reinstalls ShellCheck-${SC_VER} \
     && mv /root/.cabal/bin/shellcheck /usr/bin/shellcheck \
